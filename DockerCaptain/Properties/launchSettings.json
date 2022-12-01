@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "DockerCaptain": {
+      "commandName": "Project",
+      "commandLineArgs": "images register lkcode/lk-code-2023"
+    },
+    "WSL Ubuntu": {
+      "commandName": "WSL",
+      "distributionName": "Ubuntu"
+    },
+    "WSL Debian": {
+      "commandName": "WSL2",
+      "distributionName": "Debian"
+    },
+    "WSL openSuse": {
+      "commandName": "WSL2",
+      "distributionName": "openSUSE-Leap-15.4"
+    }
+  }
+}
