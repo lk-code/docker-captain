@@ -5,6 +5,7 @@ namespace DockerCaptain.Data;
 
 public class DataContext : DbContext
 {
+    public DbSet<Models.Image> Images { get; set; } = null!;
     public DbSet<Models.Container> Container { get; set; } = null!;
 
     public static string DatabasePath { get; set; } = string.Empty;
@@ -40,7 +41,13 @@ public class DataContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Map table names
-        modelBuilder.Entity<Models.Container>().ToTable("Container", "app");
+        modelBuilder.Entity<Models.Image>().ToTable("Images");
+        modelBuilder.Entity<Models.Image>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+        });
+
+        modelBuilder.Entity<Models.Container>().ToTable("Container");
         modelBuilder.Entity<Models.Container>(entity =>
         {
             entity.HasKey(e => e.Id);

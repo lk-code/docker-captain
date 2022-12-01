@@ -1,25 +1,34 @@
 ﻿using Cocona;
-using DockerCaptain.Data;
-using DockerCaptain.PlatformCore;
+using Cocona.Filters;
+using DockerCaptain.Data.Interfaces;
 
 namespace DockerCaptain.Commands;
 
 public class Images
 {
-    private readonly IPlatform _platform;
-    private readonly DataContext dataContext;
+    private readonly IImageRepository _imageRepository;
 
-    public Images(IPlatform platform,
-        DataContext dataContext)
+    public Images(IImageRepository imageRepository)
     {
-        this._platform = platform ?? throw new ArgumentNullException(nameof(platform));
-        this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
+        this._imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
     }
 
     [Command("register")]
-    public async Task Register([Argument(Description = "name of the docker image")] string dockerImage)
+    public async Task Register(CoconaCommandExecutingContext ctx, [Argument(Description = "name of the docker image")] string name)
     {
-        int i = 0;
-        Console.WriteLine(this._platform.ToString());
+        var image = await this._imageRepository.GetImageByName(name, CancellationToken.None);
+
+        if (image != null)
+        {
+            // image already registered
+
+            Console.WriteLine($"image {name} already registered!");
+
+            return;
+        }
+
+        // get docker id
+
+        // save in db
     }
 }

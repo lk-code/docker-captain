@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DockerCaptain.Data.Interfaces;
+using DockerCaptain.Data.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DockerCaptain.Data.Extensions;
 
@@ -12,6 +14,9 @@ public static class ServiceCollectionExtensions
         DataContext.DatabasePath = dbpath;
 
         services.AddDbContext<DataContext>();
+
+        services.AddSingleton<IImageRepository, ImageRepository>();
+        services.AddSingleton<IContainerRepository, ContainerRepository>();
 
         return services;
     }

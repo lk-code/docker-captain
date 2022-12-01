@@ -1,5 +1,5 @@
 ﻿using Cocona;
-using Cocona.Builder;
+using Cocona.Hosting;
 using DockerCaptain.Commands;
 using DockerCaptain.Core.Extensions;
 using DockerCaptain.Data.Extensions;
@@ -7,11 +7,12 @@ using DockerCaptain.PlatformCore;
 using DockerCaptain.PlatformCore.Exceptions;
 using DockerCaptain.PlatformCore.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DockerCaptain;
 
 [HasSubCommands(typeof(Images), Description = "work with docker images")]
-public class Program
+public class Program : CoconaConsoleAppBase
 {
     private const string DATABASE_FILE_NAME = "dockercaptain.db";
     private const string APP_FOLDER_NAME = "docker-captain";
@@ -19,22 +20,20 @@ public class Program
 
     static void Main(string[] args)
     {
-        CoconaAppBuilder? builder = CoconaApp.CreateBuilder();
-
         //builder.Services.TryAddSingleton<IHtmlRenderer, HtmlRenderer>();
 
         // Database
         //builder.Services.AddDatabase(ApplicationData.Current.LocalFolder.Path,
         //    DATABASE_FILE_NAME);
 
-        var hostBuilder = CoconaApp.CreateHostBuilder();
+        CoconaAppHostBuilder? builder = CoconaApp.CreateHostBuilder();
 
-        //hostBuilder.ConfigureLogging(logging =>
-        //        {
-        //            logging.AddDebug();
-        //        });
+        builder.ConfigureLogging(logging =>
+        {
+            logging.AddDebug();
+        });
 
-        hostBuilder.ConfigureServices(services =>
+        builder.ConfigureServices(services =>
         {
             try
             {
@@ -91,9 +90,6 @@ public class Program
             }
         });
 
-        hostBuilder.Run<Program>(args, options =>
-        {
-            options.EnableShellCompletionSupport = true;
-        });
+        builder.Run<Program>(args);
     }
 }
