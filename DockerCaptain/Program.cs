@@ -1,4 +1,4 @@
-﻿using Cocona;
+using Cocona;
 using Cocona.Hosting;
 using DockerCaptain.Commands;
 using DockerCaptain.Core.Extensions;
@@ -30,6 +30,9 @@ public class Program : CoconaConsoleAppBase
 
         builder.ConfigureLogging(logging =>
         {
+            // disable ef core output
+            logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+
             logging.AddDebug();
         });
 
@@ -44,6 +47,8 @@ public class Program : CoconaConsoleAppBase
 
                 // create application folder
                 string applicationFolderPath = Path.Combine(platform.ApplicationDirectory, APP_FOLDER_NAME);
+
+                // set application directory
                 Console.WriteLine($"set application directory to '{applicationFolderPath}'...");
                 Directory.CreateDirectory(applicationFolderPath);
                 Console.WriteLine("DONE");
