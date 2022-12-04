@@ -1,4 +1,5 @@
-﻿using DockerCaptain.PlatformCore;
+﻿using System.Diagnostics;
+using System.Xml.Linq;
 using static System.Environment;
 
 namespace DockerCaptain.PlatformCore.Platforms;
@@ -11,13 +12,52 @@ public class WindowsPlatformService : IPlatform
 
     public WindowsPlatformService()
     {
-        // Windows      C:\Users\larsk\AppData\Roaming\docker-captain
-        // Ubuntu       /home/lkraemer/.config/docker-captain
-        // Debian       /home/lkraemer/.config/docker-captain
-        // openSuse     /home/lkraemer/.config/docker-captain
-        // osx          /Users/larskramer/.config/docker-captain
-        string appData = Path.Combine(Environment.GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify), "docker-captain");
+        _applicationDirectory = Environment.GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify);
+    }
 
-        _applicationDirectory = GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify);
+    public async Task<string> ExecuteShellCommandAsync(string arguments)
+    {
+        await Task.CompletedTask;
+
+        Process process = new Process();
+        // Redirect the output stream of the child process.
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.RedirectStandardError = true;
+        process.StartInfo.FileName = "cmd.exe";
+        //process.StartInfo.Arguments = $"docker image inspect {name} & exit";
+        process.StartInfo.Arguments = arguments;
+
+        process.Start();
+
+        var output = new List<string>();
+
+        while (process.StandardOutput.Peek() > -1)
+        {
+            string str = process.StandardOutput.ReadLine();
+
+            Console.WriteLine(str);
+
+            output.Add(str);
+        }
+
+        while (process.StandardError.Peek() > -1)
+        {
+            string str = process.StandardError.ReadLine();
+
+            Console.WriteLine("ERROR: " + str);
+
+            output.Add(str);
+        }
+        process.WaitForExit();
+
+        // Do not wait for the child process to exit before
+        // reading to the end of its redirected stream.
+        // p.WaitForExit();
+        // Read the output stream first and then wait.
+
+        int i = 0;
+
+        return "";
     }
 }

@@ -20,12 +20,6 @@ public class Program : CoconaConsoleAppBase
 
     static void Main(string[] args)
     {
-        //builder.Services.TryAddSingleton<IHtmlRenderer, HtmlRenderer>();
-
-        // Database
-        //builder.Services.AddDatabase(ApplicationData.Current.LocalFolder.Path,
-        //    DATABASE_FILE_NAME);
-
         CoconaAppHostBuilder? builder = CoconaApp.CreateHostBuilder();
 
         builder.ConfigureLogging(logging =>

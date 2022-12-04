@@ -1,5 +1,6 @@
 ﻿using Cocona;
 using DockerCaptain.Data.Interfaces;
+using DockerCaptain.PlatformCore;
 using System;
 using System.Diagnostics;
 
@@ -8,10 +9,13 @@ namespace DockerCaptain.Commands;
 public class Images
 {
     private readonly IImageRepository _imageRepository;
+    private readonly IPlatform _platform;
 
-    public Images(IImageRepository imageRepository)
+    public Images(IImageRepository imageRepository,
+        IPlatform platform)
     {
         this._imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
+        this._platform = platform ?? throw new ArgumentNullException(nameof(platform));
     }
 
     [Command("register")]
@@ -31,43 +35,7 @@ public class Images
         var vars = Environment.GetEnvironmentVariables();
 
         // get docker information
-        Process process = new Process();
-        // Redirect the output stream of the child process.
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.FileName = "cmd.exe";
-        process.StartInfo.Arguments = $"docker image inspect {name} & exit";
-
-        process.Start();
-
-        var output = new List<string>();
-
-        while (process.StandardOutput.Peek() > -1)
-        {
-            string str = process.StandardOutput.ReadLine();
-
-            Console.WriteLine(str);
-
-            output.Add(str);
-        }
-
-        while (process.StandardError.Peek() > -1)
-        {
-            string str = process.StandardError.ReadLine();
-
-            Console.WriteLine("ERROR: " + str);
-
-            output.Add(str);
-        }
-        process.WaitForExit();
-
-        // Do not wait for the child process to exit before
-        // reading to the end of its redirected stream.
-        // p.WaitForExit();
-        // Read the output stream first and then wait.
-
-        int i = 0;
+        string output = await this._platform.ExecuteShellCommandAsync($"docker image inspect {name}");
 
         // save in db
     }

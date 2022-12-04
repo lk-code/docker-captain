@@ -18,7 +18,7 @@ public class ImageRepository : IImageRepository
     {
         Image? image = await this._dataContext
             .Images
-            .SingleOrDefaultAsync(x => x.Name.ToLowerInvariant() == name.ToLowerInvariant(), cancellationToken);
+            .SingleOrDefaultAsync(x => x.Name.ToLower() == name.ToLower(), cancellationToken);
 
         return image;
     }
