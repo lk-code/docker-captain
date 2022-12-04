@@ -13,7 +13,8 @@ public static class ServiceCollectionExtensions
         {
             { "ubuntu", typeof(UbuntuPlatformService) },
             { "win10", typeof(WindowsPlatformService) },
-            { "win11", typeof(WindowsPlatformService) }
+            { "win11", typeof(WindowsPlatformService) },
+            { "osx", typeof(OsxPlatformService) }
         };
 
         // Debian:          debian.11-x64
