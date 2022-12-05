@@ -15,7 +15,8 @@ public class WindowsPlatformService : IPlatform
         _applicationDirectory = Environment.GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify);
     }
 
-    public async Task<string> ExecuteShellCommandAsync(string arguments)
+    /// <inheritdoc/>
+    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments)
     {
         await Task.CompletedTask;
 
@@ -34,7 +35,7 @@ public class WindowsPlatformService : IPlatform
 
         while (process.StandardOutput.Peek() > -1)
         {
-            string str = process.StandardOutput.ReadLine();
+            string str = process.StandardOutput.ReadLine()!;
 
             Console.WriteLine(str);
 
@@ -43,7 +44,7 @@ public class WindowsPlatformService : IPlatform
 
         while (process.StandardError.Peek() > -1)
         {
-            string str = process.StandardError.ReadLine();
+            string str = process.StandardError.ReadLine()!;
 
             Console.WriteLine("ERROR: " + str);
 
@@ -56,8 +57,14 @@ public class WindowsPlatformService : IPlatform
         // p.WaitForExit();
         // Read the output stream first and then wait.
 
-        int i = 0;
-
         return "";
+    }
+
+    /// <inheritdoc/>
+    public async Task<string> GetDockerExecutableAsync()
+    {
+        await Task.CompletedTask;
+
+        throw new NotImplementedException();
     }
 }

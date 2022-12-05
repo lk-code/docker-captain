@@ -1,4 +1,5 @@
-﻿using static System.Environment;
+﻿using DockerCaptain.Core.Exceptions;
+using static System.Environment;
 
 namespace DockerCaptain.PlatformCore.Platforms;
 
@@ -12,8 +13,17 @@ public class UbuntuPlatformService : IPlatform
         _applicationDirectory = Environment.GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify);
     }
 
-    public Task<string> ExecuteShellCommandAsync(string arguments)
+    /// <inheritdoc/>
+    public Task<string> ExecuteShellCommandAsync(string executable, string arguments)
     {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public async Task<string> GetDockerExecutableAsync()
+    {
+        await Task.CompletedTask;
+
         throw new NotImplementedException();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Xml.Linq;
+using DockerCaptain.Core.Exceptions;
 using static System.Environment;
 
 namespace DockerCaptain.PlatformCore.Platforms;
@@ -14,49 +15,50 @@ public class OsxPlatformService : IPlatform
         _applicationDirectory = Environment.GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify);
     }
 
-    public async Task<string> ExecuteShellCommandAsync(string arguments)
+    /// <inheritdoc/>
+    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments)
+    {
+        Process process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = executable,
+                Arguments = arguments,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+        process.Start();
+
+        string error = await process.StandardError.ReadToEndAsync();
+        if (!string.IsNullOrEmpty(error.Trim()))
+        {
+            // ERROR
+            string errMessage = error.Replace("Error:", "").Trim();
+            throw new InvalidOperationException(errMessage);
+        }
+
+        // NO ERROR
+        string output = await process.StandardOutput.ReadToEndAsync();
+        return output;
+    }
+
+    /// <inheritdoc/>
+    public async Task<string> GetDockerExecutableAsync()
     {
         await Task.CompletedTask;
 
-        Process process = new Process();
-        // Redirect the output stream of the child process.
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.FileName = @"/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal";
-        //process.StartInfo.Arguments = "-c \"docker image inspect " + name + "\"";
-        process.StartInfo.Arguments = "-c \"" + arguments + "\"";
+        string dockerExecutable = "/Applications/Docker.app/Contents/Resources/bin/docker";
 
-        process.Start();
-
-        var output = new List<string>();
-
-        while (process.StandardOutput.Peek() > -1)
+        bool exists = File.Exists(@dockerExecutable);
+        if (exists != true)
         {
-            string str = process.StandardOutput.ReadLine();
-
-            Console.WriteLine(str);
-
-            output.Add(str);
+            throw new InstallationNotFoundException($"docker installation not found at {dockerExecutable}");
         }
 
-        while (process.StandardError.Peek() > -1)
-        {
-            string str = process.StandardError.ReadLine();
-
-            Console.WriteLine("ERROR: " + str);
-
-            output.Add(str);
-        }
-        process.WaitForExit();
-
-        // Do not wait for the child process to exit before
-        // reading to the end of its redirected stream.
-        // p.WaitForExit();
-        // Read the output stream first and then wait.
-
-        int i = 0;
-
-        return "";
+        return dockerExecutable;
     }
 }

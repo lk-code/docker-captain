@@ -1,4 +1,5 @@
 ﻿using Cocona;
+using DockerCaptain.Core.Exceptions;
 using DockerCaptain.Data.Interfaces;
 using DockerCaptain.PlatformCore;
 using System;
@@ -35,7 +36,24 @@ public class Images
         var vars = Environment.GetEnvironmentVariables();
 
         // get docker information
-        string output = await this._platform.ExecuteShellCommandAsync($"docker image inspect {name}");
+        try
+        {
+            string dockerExecutable = await this._platform.GetDockerExecutableAsync();
+
+            string pullArguments = $"pull {name}";
+            Console.WriteLine($"DOCKER: {pullArguments}");
+            string pullOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, pullArguments);
+
+            string inspectArguments = $"image inspect {name}";
+            Console.WriteLine($"DOCKER: {inspectArguments}");
+            string inspectOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, inspectArguments);
+
+            int i = 0;
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine($"ERROR: {err.Message}");
+        }
 
         // save in db
     }

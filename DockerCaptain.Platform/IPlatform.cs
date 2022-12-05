@@ -12,8 +12,16 @@ public interface IPlatform
     /// <summary>
     /// executes a shell command and returns the output as string
     /// </summary>
-    /// <param name="exe">the executed file (cmd.exe, etc.)</param>
+    /// <param name="executable">the executed file (cmd.exe, etc.)</param>
     /// <param name="arguments">the arguments for the execution</param>
     /// <returns></returns>
-    Task<string> ExecuteShellCommandAsync(string arguments);
+    /// <exception cref="InvalidOperationException"></exception>
+    Task<string> ExecuteShellCommandAsync(string executable, string arguments);
+
+    /// <summary>
+    /// returns the path to the docker installation or throws an exception if the docker executable was not found
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="InstallationNotFoundException"></exception>
+    Task<string> GetDockerExecutableAsync();
 }
