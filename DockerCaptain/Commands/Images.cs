@@ -37,6 +37,8 @@ public class Images
             return;
         }
 
+        bool hasError = false;
+
         // get docker information
         try
         {
@@ -44,7 +46,12 @@ public class Images
         }
         catch (Exception err)
         {
+            hasError = true;
             Console.WriteLine($"ERROR: {err.Message}");
+        }
+        if (hasError)
+        {
+            return;
         }
 
         try
