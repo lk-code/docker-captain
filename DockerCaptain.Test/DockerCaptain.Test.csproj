@@ -27,4 +27,10 @@
     <ProjectReference Include="..\DockerCaptain\DockerCaptain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Core\Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\Services\" />
+  </ItemGroup>
 </Project>

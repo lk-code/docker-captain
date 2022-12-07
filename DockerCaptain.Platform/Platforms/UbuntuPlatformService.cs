@@ -1,4 +1,5 @@
-﻿using DockerCaptain.Core.Exceptions;
+﻿using System.Diagnostics;
+using DockerCaptain.Core.Exceptions;
 using static System.Environment;
 
 namespace DockerCaptain.PlatformCore.Platforms;
@@ -14,9 +15,34 @@ public class UbuntuPlatformService : IPlatform
     }
 
     /// <inheritdoc/>
-    public Task<string> ExecuteShellCommandAsync(string executable, string arguments)
+    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments)
     {
-        throw new NotImplementedException();
+        Process process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = executable,
+                Arguments = arguments,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+        process.Start();
+
+        string error = await process.StandardError.ReadToEndAsync();
+        if (!string.IsNullOrEmpty(error.Trim()))
+        {
+            // ERROR
+            string errMessage = error.Replace("Error:", "").Trim();
+            throw new InvalidOperationException(errMessage);
+        }
+
+        // NO ERROR
+        string output = await process.StandardOutput.ReadToEndAsync();
+        return output;
     }
 
     /// <inheritdoc/>
