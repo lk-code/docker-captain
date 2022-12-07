@@ -24,6 +24,21 @@ public class UbuntuPlatformService : IPlatform
     {
         await Task.CompletedTask;
 
-        throw new NotImplementedException();
+        List<string> dockerInstallLocations = new List<string>
+        {
+            "/bin/docker",
+            "/var/lib/docker"
+        };
+
+        foreach (string dockerInstallLocation in dockerInstallLocations)
+        {
+            bool exists = File.Exists(@dockerInstallLocation);
+            if (exists == true)
+            {
+                return dockerInstallLocation;
+            }
+        }
+
+        throw new InstallationNotFoundException($"no potential docker installation found");
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace DockerCaptain;
 
 [HasSubCommands(typeof(Images), Description = "work with docker images")]
+[HasSubCommands(typeof(Info), Description = "info about this app")]
 public class Program : CoconaConsoleAppBase
 {
     private const string DATABASE_FILE_NAME = "dockercaptain.db";
@@ -43,9 +44,9 @@ public class Program : CoconaConsoleAppBase
                 string applicationFolderPath = Path.Combine(platform.ApplicationDirectory, APP_FOLDER_NAME);
 
                 // set application directory
-                Console.WriteLine($"set application directory to '{applicationFolderPath}'...");
+                //Console.WriteLine($"set application directory to '{applicationFolderPath}'...");
                 Directory.CreateDirectory(applicationFolderPath);
-                Console.WriteLine("DONE");
+                //Console.WriteLine("DONE");
 
                 Program.ApplicationFolderPath = applicationFolderPath;
             }

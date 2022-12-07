@@ -26,6 +26,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Figgle" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\icon_128.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -38,6 +41,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cocona" Version="2.0.3" />
+    <PackageReference Include="Figgle" Version="0.4.1" />
   </ItemGroup>
 
   <ItemGroup>

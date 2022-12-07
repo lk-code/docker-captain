@@ -47,8 +47,6 @@ public class Images
             string inspectArguments = $"image inspect {name}";
             Console.WriteLine($"DOCKER: {inspectArguments}");
             string inspectOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, inspectArguments);
-
-            int i = 0;
         }
         catch (Exception err)
         {
