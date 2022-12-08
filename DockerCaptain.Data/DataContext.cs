@@ -44,7 +44,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<Models.Image>().ToTable("Images");
         modelBuilder.Entity<Models.Image>(entity =>
         {
-            entity.HasKey(e => e.Id);
+            entity.HasKey(e => e.DockerId);
         });
 
         modelBuilder.Entity<Models.Container>().ToTable("Container");

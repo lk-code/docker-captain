@@ -11,8 +11,6 @@ namespace DockerCaptain.Data.Models;
 public class Image
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; } = Guid.NewGuid();
     [Required]
     public string DockerId { get; set; }
     [Required]
