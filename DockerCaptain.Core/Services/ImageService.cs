@@ -3,25 +3,30 @@ using DockerCaptain.Core.Exceptions;
 using DockerCaptain.Core.Interfaces;
 using DockerCaptain.Core.Models;
 using DockerCaptain.PlatformCore;
+using Microsoft.Extensions.Logging;
 
 namespace DockerCaptain.Core.Services;
 
 public class ImageService : IImageService
 {
+    private readonly ILogger<ImageService> _logger;
     private readonly IPlatform _platform;
 
-    public ImageService(IPlatform platform)
+    public ImageService(ILogger<ImageService> logger,
+        IPlatform platform)
     {
+        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this._platform = platform ?? throw new ArgumentNullException(nameof(platform));
     }
 
     /// <inheritdoc/>
-    public async Task<PullResult> PullAsync(string imageName, CancellationToken cancellationToken)
+    public async Task<PullResult> PullAsync(string imageName,
+        CancellationToken cancellationToken)
     {
         string dockerExecutable = await this._platform.GetDockerExecutableAsync(cancellationToken);
 
         string pullArguments = $"pull {imageName}";
-        Console.WriteLine($"DOCKER: {pullArguments}");
+        this._logger.LogInformation($"DOCKER: {pullArguments}");
 
         string pullOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, pullArguments, cancellationToken);
 

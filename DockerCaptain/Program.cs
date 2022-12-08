@@ -3,11 +3,11 @@ using Cocona.Hosting;
 using DockerCaptain.Commands;
 using DockerCaptain.Core.Extensions;
 using DockerCaptain.Data.Extensions;
-using DockerCaptain.PlatformCore;
+using DockerCaptain.Logging;
 using DockerCaptain.PlatformCore.Exceptions;
 using DockerCaptain.PlatformCore.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using static System.Environment;
 
 namespace DockerCaptain;
 
@@ -23,12 +23,36 @@ public class Program : CoconaConsoleAppBase
     {
         CoconaAppHostBuilder? builder = CoconaApp.CreateHostBuilder();
 
+        #region set application directory path
+
+        // set application directory like: 
+        // Windows      C:\Users\larsk\AppData\Roaming\docker-captain
+        // Ubuntu       /home/lkraemer/.config/docker-captain
+        // Debian       /home/lkraemer/.config/docker-captain
+        // openSuse     /home/lkraemer/.config/docker-captain
+        // osx          /Users/larskramer/.config/docker-captain
+        string applicationFolderPath = Path.Combine(Environment.GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify), APP_FOLDER_NAME);
+
+        // ensure application directory
+        Directory.CreateDirectory(applicationFolderPath);
+        // set application directory
+        Program.ApplicationFolderPath = applicationFolderPath;
+
+        #endregion
+
         builder.ConfigureLogging(logging =>
         {
             // disable ef core output
             logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
 
+            logging.ClearProviders().AddFileLogger(configuration =>
+            {
+                configuration.LogPath = Path.Combine(applicationFolderPath, "logs");
+            });
+
+#if DEBUG
             logging.AddDebug();
+#endif
         });
 
         builder.ConfigureServices(services =>
@@ -37,18 +61,6 @@ public class Program : CoconaConsoleAppBase
             {
                 // Platform
                 services.AddPlatform();
-
-                IPlatform platform = services.BuildServiceProvider().GetService<IPlatform>()!;
-
-                // create application folder
-                string applicationFolderPath = Path.Combine(platform.ApplicationDirectory, APP_FOLDER_NAME);
-
-                // set application directory
-                //Console.WriteLine($"set application directory to '{applicationFolderPath}'...");
-                Directory.CreateDirectory(applicationFolderPath);
-                //Console.WriteLine("DONE");
-
-                Program.ApplicationFolderPath = applicationFolderPath;
             }
             catch (InvalidOperationException err)
             {
