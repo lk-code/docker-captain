@@ -25,7 +25,7 @@ public class Info
         infoDisplay.AppendLine(FiggleFonts.Slant.Render("DockerCaptain"));
         infoDisplay.AppendLine("");
         infoDisplay.AppendLine("");
-        infoDisplay.AppendLine($"Version: 1.0.0");
+        infoDisplay.AppendLine($"Version: {this.GetType().Assembly.GetName().Version!.ToString()}");
         infoDisplay.AppendLine($"Development by lk-code - https://www.github.com/lk-code");
         infoDisplay.AppendLine($"Application Directory: {Program.ApplicationFolderPath}");
         infoDisplay.AppendLine("");
