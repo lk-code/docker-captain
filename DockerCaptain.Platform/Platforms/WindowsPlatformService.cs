@@ -16,41 +16,41 @@ public class WindowsPlatformService : IPlatform
     }
 
     /// <inheritdoc/>
-    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments)
+    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 
-        Process process = new Process();
-        // Redirect the output stream of the child process.
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.FileName = "cmd.exe";
-        //process.StartInfo.Arguments = $"docker image inspect {name} & exit";
-        process.StartInfo.Arguments = arguments;
+        //Process process = new Process();
+        //// Redirect the output stream of the child process.
+        //process.StartInfo.UseShellExecute = false;
+        //process.StartInfo.RedirectStandardOutput = true;
+        //process.StartInfo.RedirectStandardError = true;
+        //process.StartInfo.FileName = "cmd.exe";
+        ////process.StartInfo.Arguments = $"docker image inspect {name} & exit";
+        //process.StartInfo.Arguments = arguments;
 
-        process.Start();
+        //process.Start();
 
-        var output = new List<string>();
+        //var output = new List<string>();
 
-        while (process.StandardOutput.Peek() > -1)
-        {
-            string str = process.StandardOutput.ReadLine()!;
+        //while (process.StandardOutput.Peek() > -1)
+        //{
+        //    string str = await process.StandardOutput.ReadLineAsync()!;
 
-            Console.WriteLine(str);
+        //    Console.WriteLine(str);
 
-            output.Add(str);
-        }
+        //    output.Add(str);
+        //}
 
-        while (process.StandardError.Peek() > -1)
-        {
-            string str = process.StandardError.ReadLine()!;
+        //while (process.StandardError.Peek() > -1)
+        //{
+        //    string str = await process.StandardError.ReadLineAsync()!;
 
-            Console.WriteLine("ERROR: " + str);
+        //    Console.WriteLine("ERROR: " + str);
 
-            output.Add(str);
-        }
-        process.WaitForExit();
+        //    output.Add(str);
+        //}
+        //process.WaitForExitAsync(cancellationToken);
 
         // Do not wait for the child process to exit before
         // reading to the end of its redirected stream.
@@ -61,7 +61,7 @@ public class WindowsPlatformService : IPlatform
     }
 
     /// <inheritdoc/>
-    public async Task<string> GetDockerExecutableAsync()
+    public async Task<string> GetDockerExecutableAsync(CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 

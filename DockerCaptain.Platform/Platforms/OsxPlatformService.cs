@@ -16,7 +16,7 @@ public class OsxPlatformService : IPlatform
     }
 
     /// <inheritdoc/>
-    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments)
+    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments, CancellationToken cancellationToken)
     {
         Process process = new Process
         {
@@ -47,7 +47,7 @@ public class OsxPlatformService : IPlatform
     }
 
     /// <inheritdoc/>
-    public async Task<string> GetDockerExecutableAsync()
+    public async Task<string> GetDockerExecutableAsync(CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 

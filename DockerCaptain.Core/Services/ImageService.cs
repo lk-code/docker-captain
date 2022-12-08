@@ -16,14 +16,14 @@ public class ImageService : IImageService
     }
 
     /// <inheritdoc/>
-    public async Task<PullResult> PullAsync(string imageName)
+    public async Task<PullResult> PullAsync(string imageName, CancellationToken cancellationToken)
     {
-        string dockerExecutable = await this._platform.GetDockerExecutableAsync();
+        string dockerExecutable = await this._platform.GetDockerExecutableAsync(cancellationToken);
 
         string pullArguments = $"pull {imageName}";
         Console.WriteLine($"DOCKER: {pullArguments}");
 
-        string pullOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, pullArguments);
+        string pullOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, pullArguments, cancellationToken);
 
         string[] lines = pullOutput
             .Split(Environment.NewLine)

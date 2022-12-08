@@ -1,7 +1,9 @@
 ﻿using Cocona;
 using DockerCaptain.Core.Exceptions;
 using DockerCaptain.Core.Interfaces;
+using DockerCaptain.Core.Models;
 using DockerCaptain.Data.Interfaces;
+using DockerCaptain.Data.Models;
 using DockerCaptain.PlatformCore;
 using System;
 using System.Diagnostics;
@@ -26,8 +28,7 @@ public class Images
     [Command("register")]
     public async Task Register([Argument(Description = "name of the docker image")] string name)
     {
-        var image = await this._imageRepository.GetImageByName(name, CancellationToken.None);
-
+        Image? image = await this._imageRepository.GetImageByName(name, CancellationToken.None);
         if (image != null)
         {
             // image already registered
@@ -40,9 +41,10 @@ public class Images
         bool hasError = false;
 
         // get docker information
+        PullResult pullResult = null!;
         try
         {
-            await this._imageService.PullAsync(name);
+            pullResult = await this._imageService.PullAsync(name, CancellationToken.None);
         }
         catch (Exception err)
         {
@@ -54,21 +56,22 @@ public class Images
             return;
         }
 
+
+        // save in db
         try
         {
-            string dockerExecutable = await this._platform.GetDockerExecutableAsync();
-
-            string inspectArguments = $"image inspect {name}";
-            Console.WriteLine($"DOCKER: {inspectArguments}");
-            string inspectOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, inspectArguments);
-
-            // TODO: render INSPECT output
+            image = await this._imageRepository.CreateOrUpdateAsync(new Image(pullResult.Id, pullResult.Name), CancellationToken.None);
         }
         catch (Exception err)
         {
+            hasError = true;
             Console.WriteLine($"ERROR: {err.Message}");
         }
+        if (hasError)
+        {
+            return;
+        }
 
-        // save in db
+        Console.WriteLine($"Image {pullResult.Id} successfully registered and pulled to docker.");
     }
 }

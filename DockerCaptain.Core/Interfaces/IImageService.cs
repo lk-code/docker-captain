@@ -8,6 +8,7 @@ public interface IImageService
     /// pulls a docker image and returns the result
     /// </summary>
     /// <param name="imageName">the name of the docker image</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<PullResult> PullAsync(string imageName);
+    Task<PullResult> PullAsync(string imageName, CancellationToken cancellationToken);
 }

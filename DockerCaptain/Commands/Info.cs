@@ -22,9 +22,7 @@ public class Info
     {
         StringBuilder infoDisplay = new StringBuilder();
 
-        infoDisplay.AppendLine("");
-        infoDisplay.AppendLine("");
-        infoDisplay.AppendLine(FiggleFonts.Standard.Render("DockerCaptain"));
+        infoDisplay.AppendLine(FiggleFonts.Slant.Render("DockerCaptain"));
         infoDisplay.AppendLine("");
         infoDisplay.AppendLine("");
         infoDisplay.AppendLine($"Version: 1.0.0");
@@ -33,7 +31,7 @@ public class Info
         infoDisplay.AppendLine("");
         infoDisplay.AppendLine("");
         infoDisplay.AppendLine("Doker");
-        infoDisplay.AppendLine($"Executable: {await this._platform.GetDockerExecutableAsync()}");
+        infoDisplay.AppendLine($"Executable: {await this._platform.GetDockerExecutableAsync(CancellationToken.None)}");
 
         Console.WriteLine(infoDisplay.ToString());
     }
