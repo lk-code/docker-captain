@@ -23,6 +23,12 @@ This tool is a cross-platform helper (currently for macOS, Ubuntu and Windows - 
 
 ## usage
 
+### display info
+
+displays the app version and the path to app-directory and docker-binaries.
+
+`captain info`
+
 ### register a image
 
 register the given docker image and pulls in docker the latest version
