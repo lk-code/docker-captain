@@ -30,7 +30,7 @@ public class Info
         infoDisplay.AppendLine($"Application Directory: {Program.ApplicationFolderPath}");
         infoDisplay.AppendLine("");
         infoDisplay.AppendLine("");
-        infoDisplay.AppendLine("Doker");
+        infoDisplay.AppendLine("Docker");
         infoDisplay.AppendLine($"Executable: {await this._platform.GetDockerExecutableAsync(CancellationToken.None)}");
 
         Console.WriteLine(infoDisplay.ToString());
