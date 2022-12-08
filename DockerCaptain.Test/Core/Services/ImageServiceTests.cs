@@ -40,14 +40,14 @@ public class ImageServiceTests
             "docker.io/lkcode/test:latest";
 
         this._platform
-            .Setup(x => x.GetDockerExecutableAsync())
+            .Setup(x => x.GetDockerExecutableAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync("/docker");
 
         this._platform
-            .Setup(x => x.ExecuteShellCommandAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .Setup(x => x.ExecuteShellCommandAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(pullOutput);
 
-        PullResult result = await this._instance.PullAsync("lkcode/test");
+        PullResult result = await this._instance.PullAsync("lkcode/test", CancellationToken.None);
 
         result.Should().NotBeNull();
         result.Id.Should().Be("docker.io/lkcode/test:latest");
@@ -91,14 +91,14 @@ public class ImageServiceTests
             "docker.io/lkcode/test:latest";
 
         this._platform
-            .Setup(x => x.GetDockerExecutableAsync())
+            .Setup(x => x.GetDockerExecutableAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync("/docker");
 
         this._platform
-            .Setup(x => x.ExecuteShellCommandAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .Setup(x => x.ExecuteShellCommandAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(pullOutput);
 
-        PullResult result = await this._instance.PullAsync("lkcode/test");
+        PullResult result = await this._instance.PullAsync("lkcode/test", CancellationToken.None);
 
         result.Should().NotBeNull();
         result.Id.Should().Be("docker.io/lkcode/test:latest");
@@ -116,19 +116,19 @@ public class ImageServiceTests
             "Error response from daemon: pull access denied for lkcode/test, repository does not exist or may require 'docker login': denied: requested access to the resource is denied";
 
         this._platform
-        .Setup(x => x.GetDockerExecutableAsync())
+        .Setup(x => x.GetDockerExecutableAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync("/docker");
 
         this._platform
-            .Setup(x => x.ExecuteShellCommandAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .Setup(x => x.ExecuteShellCommandAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(pullOutput);
 
         bool exceptionThrown = false;
         try
         {
-            await this._instance.PullAsync("lkcode/test");
+            await this._instance.PullAsync("lkcode/test", CancellationToken.None);
         }
-        catch (DockerOperationException err)
+        catch (DockerOperationException)
         {
             exceptionThrown = true;
         }
