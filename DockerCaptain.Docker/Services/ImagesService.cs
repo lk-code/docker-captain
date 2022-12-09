@@ -1,11 +1,10 @@
-﻿using System.Xml.Linq;
-using DockerCaptain.Core.Exceptions;
-using DockerCaptain.Core.Interfaces;
-using DockerCaptain.Core.Models;
+﻿using DockerCaptain.Docker.Exceptions;
+using DockerCaptain.Docker.Interfaces;
+using DockerCaptain.Docker.Models;
 using DockerCaptain.PlatformCore;
 using Microsoft.Extensions.Logging;
 
-namespace DockerCaptain.Core.Services;
+namespace DockerCaptain.Docker.Services;
 
 public class ImageService : IImageService
 {

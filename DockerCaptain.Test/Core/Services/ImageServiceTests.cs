@@ -1,19 +1,12 @@
-﻿using System;
-using System.Net.Sockets;
-using System.Reflection.Emit;
-using DockerCaptain.Core.Exceptions;
-using DockerCaptain.Core.Interfaces;
-using DockerCaptain.Core.Models;
-using DockerCaptain.Core.Services;
+﻿using DockerCaptain.Docker.Exceptions;
+using DockerCaptain.Docker.Interfaces;
+using DockerCaptain.Docker.Models;
+using DockerCaptain.Docker.Services;
 using DockerCaptain.PlatformCore;
-using DockerCaptain.PlatformCore.Helper;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Newtonsoft.Json;
 
 namespace DockerCaptain.Test.Core.Services;
 

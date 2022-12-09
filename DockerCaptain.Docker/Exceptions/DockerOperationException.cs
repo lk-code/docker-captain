@@ -1,5 +1,4 @@
-﻿using System;
-namespace DockerCaptain.Core.Exceptions;
+﻿namespace DockerCaptain.Docker.Exceptions;
 
 public class DockerOperationException : Exception
 {

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DockerCaptain.Test", "Docke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DockerCaptain.PlatformCore", "DockerCaptain.Platform\DockerCaptain.PlatformCore.csproj", "{FADD066C-2A6D-4105-8FCE-3BC1B30EE62D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DockerCaptain.Docker", "DockerCaptain.Docker\DockerCaptain.Docker.csproj", "{9456E1EC-2587-4E0F-A38A-A7A0A1BEF44E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FADD066C-2A6D-4105-8FCE-3BC1B30EE62D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FADD066C-2A6D-4105-8FCE-3BC1B30EE62D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FADD066C-2A6D-4105-8FCE-3BC1B30EE62D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9456E1EC-2587-4E0F-A38A-A7A0A1BEF44E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9456E1EC-2587-4E0F-A38A-A7A0A1BEF44E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9456E1EC-2587-4E0F-A38A-A7A0A1BEF44E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9456E1EC-2587-4E0F-A38A-A7A0A1BEF44E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

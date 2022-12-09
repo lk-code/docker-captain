@@ -1,14 +1,11 @@
 ﻿using Cocona;
-using DockerCaptain.Core.Exceptions;
-using DockerCaptain.Core.Interfaces;
-using DockerCaptain.Core.Models;
 using DockerCaptain.Data.Interfaces;
 using DockerCaptain.Data.Models;
+using DockerCaptain.Docker.Interfaces;
+using DockerCaptain.Docker.Models;
 using DockerCaptain.Logging;
 using DockerCaptain.PlatformCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
 
 namespace DockerCaptain.Commands;
 

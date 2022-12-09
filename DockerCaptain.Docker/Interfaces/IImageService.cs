@@ -1,6 +1,6 @@
-﻿using DockerCaptain.Core.Models;
+﻿using DockerCaptain.Docker.Models;
 
-namespace DockerCaptain.Core.Interfaces;
+namespace DockerCaptain.Docker.Interfaces;
 
 public interface IImageService
 {

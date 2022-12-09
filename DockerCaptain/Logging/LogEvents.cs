@@ -9,6 +9,7 @@ internal static class LogEvents
     internal static EventId ServicesAddPlatform = new EventId(10001, "ServicesAddPlatform");
     internal static EventId ServicesAddCore = new EventId(10002, "ServicesAddCore");
     internal static EventId ServicesAddDatabase = new EventId(10003, "ServicesAddDatabase");
+    internal static EventId ServicesAddDocker = new EventId(10004, "ServicesAddDocker");
 
     // commands
     internal static EventId CommandInfoDisplayInfo = new(20001, "CommandInfoDisplayInfo");

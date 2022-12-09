@@ -1,10 +1,11 @@
+using System.Text.Json;
 using Cocona;
 using Cocona.Hosting;
 using DockerCaptain.Commands;
-using DockerCaptain.Core.Extensions;
+using DockerCaptain.Core.Config;
 using DockerCaptain.Data.Extensions;
+using DockerCaptain.Docker.Extensions;
 using DockerCaptain.Logging;
-using DockerCaptain.PlatformCore.Exceptions;
 using DockerCaptain.PlatformCore.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,8 +18,10 @@ namespace DockerCaptain;
 public class Program : CoconaConsoleAppBase
 {
     private const string DATABASE_FILE_NAME = "dockercaptain.db";
+    private const string CONFIG_FILE_NAME = "config.json";
     private const string APP_FOLDER_NAME = "docker-captain";
     public static string ApplicationFolderPath = "";
+    public static UserConfiguration UserConfiguration = null!;
 
     static void Main(string[] args)
     {
@@ -38,6 +41,21 @@ public class Program : CoconaConsoleAppBase
         Directory.CreateDirectory(applicationFolderPath);
         // set application directory
         Program.ApplicationFolderPath = applicationFolderPath;
+
+        #endregion
+
+        #region user config
+
+        // create empty user config file
+        string userConfigFile = Path.Combine(Program.ApplicationFolderPath, CONFIG_FILE_NAME);
+        if (!File.Exists(userConfigFile))
+        {
+            File.AppendAllText(userConfigFile, "{}");
+        }
+
+        // load file
+        string userConfigJson = File.ReadAllText(userConfigFile);
+        Program.UserConfiguration = JsonSerializer.Deserialize<UserConfiguration>(userConfigJson)!;
 
         #endregion
 
@@ -64,10 +82,17 @@ public class Program : CoconaConsoleAppBase
             logger.LogTrace("----------");
             logger.LogTrace($"application-directory: {Program.ApplicationFolderPath}");
 
+            services.AddSingleton<UserConfiguration>(Program.UserConfiguration);
+
             try
             {
-                // Platform
+                // Platform Logic
                 services.AddPlatform();
+
+                if (!string.IsNullOrEmpty(Program.UserConfiguration.Docker))
+                {
+
+                }
             }
             catch (Exception err)
             {
@@ -77,7 +102,7 @@ public class Program : CoconaConsoleAppBase
 
             try
             {
-                // Database
+                // Database Logic
                 services.AddDatabase(Program.ApplicationFolderPath, DATABASE_FILE_NAME);
             }
             catch (Exception err)
@@ -88,12 +113,12 @@ public class Program : CoconaConsoleAppBase
 
             try
             {
-                // Database
-                services.AddCore();
+                // Docker Logic
+                services.AddDocker();
             }
             catch (Exception err)
             {
-                logger.LogError(LogEvents.ServicesAddCore, err, err.Message);
+                logger.LogError(LogEvents.ServicesAddDocker, err, err.Message);
                 return;
             }
         });

@@ -1,64 +1,59 @@
 ﻿using System.Diagnostics;
-using System.Xml.Linq;
-using static System.Environment;
+using DockerCaptain.Core.Config;
 
 namespace DockerCaptain.PlatformCore.Platforms;
 
 public class WindowsPlatformService : IPlatform
 {
-    public WindowsPlatformService()
+    private readonly UserConfiguration _userConfiguration;
+
+    public WindowsPlatformService(UserConfiguration userConfiguration)
     {
+        this._userConfiguration = userConfiguration ?? throw new ArgumentNullException(nameof(userConfiguration));
     }
 
     /// <inheritdoc/>
-    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments, CancellationToken cancellationToken)
+    public async Task<string> ExecuteShellCommandAsync(string executable,
+        string arguments,
+        CancellationToken cancellationToken)
     {
-        await Task.CompletedTask;
+        Process process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = executable,
+                Arguments = arguments,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+        process.Start();
 
-        //Process process = new Process();
-        //// Redirect the output stream of the child process.
-        //process.StartInfo.UseShellExecute = false;
-        //process.StartInfo.RedirectStandardOutput = true;
-        //process.StartInfo.RedirectStandardError = true;
-        //process.StartInfo.FileName = "cmd.exe";
-        ////process.StartInfo.Arguments = $"docker image inspect {name} & exit";
-        //process.StartInfo.Arguments = arguments;
+        string error = await process.StandardError.ReadToEndAsync();
+        if (!string.IsNullOrEmpty(error.Trim()))
+        {
+            // ERROR
+            string errMessage = error.Replace("Error:", "").Trim();
+            throw new InvalidOperationException(errMessage);
+        }
 
-        //process.Start();
-
-        //var output = new List<string>();
-
-        //while (process.StandardOutput.Peek() > -1)
-        //{
-        //    string str = await process.StandardOutput.ReadLineAsync()!;
-
-        //    Console.WriteLine(str);
-
-        //    output.Add(str);
-        //}
-
-        //while (process.StandardError.Peek() > -1)
-        //{
-        //    string str = await process.StandardError.ReadLineAsync()!;
-
-        //    Console.WriteLine("ERROR: " + str);
-
-        //    output.Add(str);
-        //}
-        //process.WaitForExitAsync(cancellationToken);
-
-        // Do not wait for the child process to exit before
-        // reading to the end of its redirected stream.
-        // p.WaitForExit();
-        // Read the output stream first and then wait.
-
-        return "";
+        // NO ERROR
+        string output = await process.StandardOutput.ReadToEndAsync();
+        return output;
     }
 
     /// <inheritdoc/>
     public async Task<string> GetDockerExecutableAsync(CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+
+        if (!string.IsNullOrEmpty(this._userConfiguration.Docker))
+        {
+            return this._userConfiguration.Docker;
+        }
 
         throw new NotImplementedException();
     }
