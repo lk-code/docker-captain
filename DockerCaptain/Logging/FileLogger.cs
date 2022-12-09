@@ -48,11 +48,18 @@ public sealed class FileLogger : ILogger
                 logPath = config.LogPath;
             }
 
-            string logFile = Path.Combine(logPath, $"log_{DateTime.Now.ToShortDateString()}.txt");
+            string logFile = Path.Combine(logPath, $"log_{DateTime.Now.ToString(config.LogFileDateTemplate)}.txt");
 
             string type = $"{logLevel,-12}".ToUpper();
 
-            File.AppendAllText(logFile, $"{DateTime.Now.ToShortTimeString()} - {type}: {formatter(state, exception)}{Environment.NewLine}");
+            File.AppendAllText(logFile, $"{DateTime.Now.ToLongTimeString()} - {type}: {formatter(state, exception)}{Environment.NewLine}");
+
+            if (exception != null)
+            {
+                File.AppendAllText(logFile, $"{exception.GetType()}{Environment.NewLine}");
+                File.AppendAllText(logFile, $"{exception.Message}{Environment.NewLine}");
+                File.AppendAllText(logFile, $"{exception.StackTrace}{Environment.NewLine}");
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using DockerCaptain.Core.Interfaces;
 using DockerCaptain.Core.Models;
 using DockerCaptain.Data.Interfaces;
 using DockerCaptain.Data.Models;
+using DockerCaptain.Logging;
 using DockerCaptain.PlatformCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -33,6 +34,8 @@ public class Images
     public async Task Register([Option('f')] bool force,
         [Argument(Description = "name of the docker image")] string name)
     {
+        this._logger.LogTrace("Images->Register");
+
         Image? image = await this._imageRepository.GetImageByName(name, CancellationToken.None);
         if (image != null
             && force != true)
@@ -40,7 +43,6 @@ public class Images
             // image already registered
 
             this._logger.LogInformation($"image {name} already registered!");
-            Console.WriteLine($"image {name} already registered!");
 
             return;
         }
@@ -56,8 +58,7 @@ public class Images
         catch (Exception err)
         {
             hasError = true;
-            this._logger.LogError(err.Message);
-            Console.WriteLine($"ERROR: {err.Message}");
+            this._logger.LogError(LogEvents.CommandImagesRegister, err, err.Message);
         }
         if (hasError)
         {
@@ -68,13 +69,13 @@ public class Images
         // save in db
         try
         {
+            this._logger.LogTrace("try to create or update the docker image registry");
             image = await this._imageRepository.CreateOrUpdateAsync(new Image(pullResult.Id, pullResult.Name), CancellationToken.None);
         }
         catch (Exception err)
         {
             hasError = true;
-            this._logger.LogError(err.Message);
-            Console.WriteLine($"ERROR: {err.Message}");
+            this._logger.LogError(LogEvents.CommandImagesRegister, err, err.Message);
         }
         if (hasError)
         {
@@ -82,6 +83,5 @@ public class Images
         }
 
         this._logger.LogInformation($"Image {pullResult.Id} successfully registered and pulled to docker.");
-        Console.WriteLine($"Image {pullResult.Id} successfully registered and pulled to docker.");
     }
 }

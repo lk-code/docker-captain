@@ -26,7 +26,7 @@ public class ImageService : IImageService
         string dockerExecutable = await this._platform.GetDockerExecutableAsync(cancellationToken);
 
         string pullArguments = $"pull {imageName}";
-        this._logger.LogInformation($"DOCKER: {pullArguments}");
+        this._logger.LogTrace($"DOCKER: {pullArguments}");
 
         string pullOutput = await this._platform.ExecuteShellCommandAsync(dockerExecutable, pullArguments, cancellationToken);
 

@@ -6,6 +6,7 @@ using DockerCaptain.Data.Extensions;
 using DockerCaptain.Logging;
 using DockerCaptain.PlatformCore.Exceptions;
 using DockerCaptain.PlatformCore.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using static System.Environment;
 
@@ -43,9 +44,9 @@ public class Program : CoconaConsoleAppBase
         builder.ConfigureLogging(logging =>
         {
             // disable ef core output
-            logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
-
-            logging.ClearProviders().AddFileLogger(configuration =>
+            logging.ClearProviders()
+            .AddConsoleLogger()
+            .AddFileLogger(configuration =>
             {
                 configuration.LogPath = Path.Combine(applicationFolderPath, "logs");
             });
@@ -57,25 +58,20 @@ public class Program : CoconaConsoleAppBase
 
         builder.ConfigureServices(services =>
         {
+
+            ILogger logger = services.BuildServiceProvider().GetService<ILogger<Program>>()!;
+
+            logger.LogTrace("----------");
+            logger.LogTrace($"application-directory: {Program.ApplicationFolderPath}");
+
             try
             {
                 // Platform
                 services.AddPlatform();
             }
-            catch (InvalidOperationException err)
-            {
-                Console.WriteLine($"ERROR: {err.Message}");
-                return;
-            }
-            catch (NotSupportedPlatformException err)
-            {
-                // current platform isn't supported
-                Console.WriteLine($"ERROR: {err.Message}");
-                return;
-            }
             catch (Exception err)
             {
-                Console.WriteLine($"ERROR: {err.Message}");
+                logger.LogError(LogEvents.ServicesAddPlatform, err, err.Message);
                 return;
             }
 
@@ -86,7 +82,7 @@ public class Program : CoconaConsoleAppBase
             }
             catch (Exception err)
             {
-                Console.WriteLine($"ERROR: {err.Message}");
+                logger.LogError(LogEvents.ServicesAddDatabase, err, err.Message);
                 return;
             }
 
@@ -97,7 +93,7 @@ public class Program : CoconaConsoleAppBase
             }
             catch (Exception err)
             {
-                Console.WriteLine($"ERROR: {err.Message}");
+                logger.LogError(LogEvents.ServicesAddCore, err, err.Message);
                 return;
             }
         });
