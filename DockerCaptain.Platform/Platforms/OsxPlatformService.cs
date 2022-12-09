@@ -7,12 +7,8 @@ namespace DockerCaptain.PlatformCore.Platforms;
 
 public class OsxPlatformService : IPlatform
 {
-    private readonly string _applicationDirectory;
-    public string ApplicationDirectory { get => _applicationDirectory; }
-
     public OsxPlatformService()
     {
-        _applicationDirectory = Environment.GetFolderPath(SpecialFolder.ApplicationData, SpecialFolderOption.DoNotVerify);
     }
 
     /// <inheritdoc/>

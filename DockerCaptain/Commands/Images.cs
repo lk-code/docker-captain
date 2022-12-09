@@ -4,7 +4,9 @@ using DockerCaptain.Core.Interfaces;
 using DockerCaptain.Core.Models;
 using DockerCaptain.Data.Interfaces;
 using DockerCaptain.Data.Models;
+using DockerCaptain.Logging;
 using DockerCaptain.PlatformCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
@@ -12,28 +14,35 @@ namespace DockerCaptain.Commands;
 
 public class Images
 {
+    private readonly ILogger<Images> _logger;
     private readonly IImageRepository _imageRepository;
     private readonly IImageService _imageService;
     private readonly IPlatform _platform;
 
-    public Images(IImageRepository imageRepository,
+    public Images(ILogger<Images> logger,
+        IImageRepository imageRepository,
         IImageService imageService,
         IPlatform platform)
     {
+        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this._imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         this._imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
         this._platform = platform ?? throw new ArgumentNullException(nameof(platform));
     }
 
     [Command("register")]
-    public async Task Register([Argument(Description = "name of the docker image")] string name)
+    public async Task Register([Option('f')] bool force,
+        [Argument(Description = "name of the docker image")] string name)
     {
+        this._logger.LogTrace("Images->Register");
+
         Image? image = await this._imageRepository.GetImageByName(name, CancellationToken.None);
-        if (image != null)
+        if (image != null
+            && force != true)
         {
             // image already registered
 
-            Console.WriteLine($"image {name} already registered!");
+            this._logger.LogInformation($"image {name} already registered!");
 
             return;
         }
@@ -49,7 +58,7 @@ public class Images
         catch (Exception err)
         {
             hasError = true;
-            Console.WriteLine($"ERROR: {err.Message}");
+            this._logger.LogError(LogEvents.CommandImagesRegister, err, err.Message);
         }
         if (hasError)
         {
@@ -60,18 +69,19 @@ public class Images
         // save in db
         try
         {
+            this._logger.LogTrace("try to create or update the docker image registry");
             image = await this._imageRepository.CreateOrUpdateAsync(new Image(pullResult.Id, pullResult.Name), CancellationToken.None);
         }
         catch (Exception err)
         {
             hasError = true;
-            Console.WriteLine($"ERROR: {err.Message}");
+            this._logger.LogError(LogEvents.CommandImagesRegister, err, err.Message);
         }
         if (hasError)
         {
             return;
         }
 
-        Console.WriteLine($"Image {pullResult.Id} successfully registered and pulled to docker.");
+        this._logger.LogInformation($"Image {pullResult.Id} successfully registered and pulled to docker.");
     }
 }

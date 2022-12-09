@@ -8,6 +8,8 @@ using DockerCaptain.Core.Services;
 using DockerCaptain.PlatformCore;
 using DockerCaptain.PlatformCore.Helper;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -25,9 +27,13 @@ public class ImageServiceTests
     [TestInitialize]
     public void SetUp()
     {
+        ServiceProvider serviceProvider = new ServiceCollection()
+            .AddLogging(logging => logging.AddDebug())
+            .BuildServiceProvider();
+
         this._platform = new Mock<IPlatform>();
 
-        this._instance = new ImageService(this._platform.Object);
+        this._instance = new ImageService(serviceProvider.GetService<ILogger<ImageService>>()!, this._platform.Object);
     }
 
     [TestMethod]
