@@ -49,6 +49,7 @@
     <ProjectReference Include="..\DockerCaptain.Core\DockerCaptain.Core.csproj" />
     <ProjectReference Include="..\DockerCaptain.Data\DockerCaptain.Data.csproj" />
     <ProjectReference Include="..\DockerCaptain.Platform\DockerCaptain.PlatformCore.csproj" />
+    <ProjectReference Include="..\DockerCaptain.Docker\DockerCaptain.Docker.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,6 +21,14 @@ This tool is a cross-platform helper (currently for macOS, Ubuntu and Windows - 
 
 `dotnet tool update --global DockerCaptain`
 
+## user config
+
+edit the file config.json in the app directory (you can find the path via `captain info`)
+
+possible config values:
+
+* docker (string) - "/path/to/docker/executable.exe"
+
 ## usage
 
 ### display info

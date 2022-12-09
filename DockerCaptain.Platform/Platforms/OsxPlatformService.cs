@@ -1,18 +1,22 @@
 ﻿using System.Diagnostics;
-using System.Xml.Linq;
+using DockerCaptain.Core.Config;
 using DockerCaptain.Core.Exceptions;
-using static System.Environment;
 
 namespace DockerCaptain.PlatformCore.Platforms;
 
 public class OsxPlatformService : IPlatform
 {
-    public OsxPlatformService()
+    private readonly UserConfiguration _userConfiguration;
+
+    public OsxPlatformService(UserConfiguration userConfiguration)
     {
+        this._userConfiguration = userConfiguration ?? throw new ArgumentNullException(nameof(userConfiguration));
     }
 
     /// <inheritdoc/>
-    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments, CancellationToken cancellationToken)
+    public async Task<string> ExecuteShellCommandAsync(string executable,
+        string arguments,
+        CancellationToken cancellationToken)
     {
         Process process = new Process
         {
@@ -46,6 +50,11 @@ public class OsxPlatformService : IPlatform
     public async Task<string> GetDockerExecutableAsync(CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+
+        if (!string.IsNullOrEmpty(this._userConfiguration.Docker))
+        {
+            return this._userConfiguration.Docker;
+        }
 
         string dockerExecutable = "/Applications/Docker.app/Contents/Resources/bin/docker";
 

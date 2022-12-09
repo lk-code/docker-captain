@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DockerCaptain.Core.Models;
+﻿namespace DockerCaptain.Docker.Models;
 
 public class PullResult
 {

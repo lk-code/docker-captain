@@ -1,17 +1,22 @@
 ﻿using System.Diagnostics;
+using DockerCaptain.Core.Config;
 using DockerCaptain.Core.Exceptions;
-using static System.Environment;
 
 namespace DockerCaptain.PlatformCore.Platforms;
 
 public class UbuntuPlatformService : IPlatform
 {
-    public UbuntuPlatformService()
+    private readonly UserConfiguration _userConfiguration;
+
+    public UbuntuPlatformService(UserConfiguration userConfiguration)
     {
+        this._userConfiguration = userConfiguration ?? throw new ArgumentNullException(nameof(userConfiguration));
     }
 
     /// <inheritdoc/>
-    public async Task<string> ExecuteShellCommandAsync(string executable, string arguments, CancellationToken cancellationToken)
+    public async Task<string> ExecuteShellCommandAsync(string executable,
+        string arguments,
+        CancellationToken cancellationToken)
     {
         Process process = new Process
         {
@@ -45,6 +50,11 @@ public class UbuntuPlatformService : IPlatform
     public async Task<string> GetDockerExecutableAsync(CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
+
+        if (!string.IsNullOrEmpty(this._userConfiguration.Docker))
+        {
+            return this._userConfiguration.Docker;
+        }
 
         List<string> dockerInstallLocations = new List<string>
         {

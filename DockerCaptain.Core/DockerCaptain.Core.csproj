@@ -7,16 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DockerCaptain.Data\DockerCaptain.Data.csproj" />
-    <ProjectReference Include="..\DockerCaptain.Platform\DockerCaptain.PlatformCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Models\" />
+    <Folder Include="Config\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Models\" />
+    <None Remove="Config\" />
   </ItemGroup>
 </Project>
