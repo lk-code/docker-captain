@@ -35,7 +35,7 @@ register the given docker image and pulls in docker the latest version
 
 `captain images register {DOCKER_IMAGE_NAME} [-f][--force]`
 
-* -f --force (optional)
+* `-f` `--force` (optional)
 
 **example**:
 
