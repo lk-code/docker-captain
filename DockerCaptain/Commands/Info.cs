@@ -36,8 +36,12 @@ public class Info
             this._logger.LogTrace(version);
 
             this._logger.LogTrace("load ApplicationFolderPath");
-            string appDirectoryPath = Program.ApplicationFolderPath;
+            string appDirectoryPath = Program.OriginalApplicationFolderPath;
             this._logger.LogTrace(appDirectoryPath);
+
+            this._logger.LogTrace("load UserConfig ApplicationFolderPath");
+            string userConfigAppDirectoryPath = Program.ApplicationFolderPath;
+            this._logger.LogTrace(userConfigAppDirectoryPath);
 
             this._logger.LogTrace("load Docker executable path");
             string dockerExecutablePath = await this._platform.GetDockerExecutableAsync(CancellationToken.None);
@@ -50,6 +54,7 @@ public class Info
             infoDisplay.AppendLine($"DockerCaptain Project - https://www.github.com/lk-code/docker-captain");
             infoDisplay.AppendLine($"Development by lk-code - https://www.github.com/lk-code");
             infoDisplay.AppendLine($"Application Directory: {appDirectoryPath}");
+            infoDisplay.AppendLine($"User Configured Application Directory: {((appDirectoryPath.ToLowerInvariant() != userConfigAppDirectoryPath.ToLower()) ? userConfigAppDirectoryPath : "None specified")}");
             infoDisplay.AppendLine("");
             infoDisplay.AppendLine("");
             infoDisplay.AppendLine("Docker");
