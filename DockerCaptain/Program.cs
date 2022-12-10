@@ -20,6 +20,7 @@ public class Program : CoconaConsoleAppBase
     private const string DATABASE_FILE_NAME = "dockercaptain.db";
     private const string CONFIG_FILE_NAME = "config.json";
     private const string APP_FOLDER_NAME = "docker-captain";
+    public static string OriginalApplicationFolderPath = "";
     public static string ApplicationFolderPath = "";
     public static UserConfiguration UserConfiguration = null!;
 
@@ -40,6 +41,7 @@ public class Program : CoconaConsoleAppBase
         // ensure application directory
         Directory.CreateDirectory(applicationFolderPath);
         // set application directory
+        Program.OriginalApplicationFolderPath = applicationFolderPath;
         Program.ApplicationFolderPath = applicationFolderPath;
 
         #endregion
@@ -57,6 +59,15 @@ public class Program : CoconaConsoleAppBase
         string userConfigJson = File.ReadAllText(userConfigFile);
         Program.UserConfiguration = JsonSerializer.Deserialize<UserConfiguration>(userConfigJson)!;
 
+        if (!string.IsNullOrEmpty(Program.UserConfiguration.AppDirectory))
+        {
+            string userApplicationFolderPath = Path.Combine(Program.UserConfiguration.AppDirectory, APP_FOLDER_NAME);
+
+            // ensure application directory
+            Directory.CreateDirectory(userApplicationFolderPath);
+            Program.ApplicationFolderPath = userApplicationFolderPath;
+        }
+
         #endregion
 
         builder.ConfigureLogging(logging =>
@@ -66,7 +77,7 @@ public class Program : CoconaConsoleAppBase
             .AddConsoleLogger()
             .AddFileLogger(configuration =>
             {
-                configuration.LogPath = Path.Combine(applicationFolderPath, "logs");
+                configuration.LogPath = Path.Combine(Program.ApplicationFolderPath, "logs");
             });
 
 #if DEBUG

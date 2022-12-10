@@ -28,6 +28,7 @@ edit the file config.json in the app directory (you can find the path via `capta
 possible config values:
 
 * docker (string) - "/path/to/docker/executable.exe"
+* appdirectory (string) - "/path/to/app/directory" (notice: config.json must ALWAYS be located at the original app-directory!)
 
 ## usage
 
