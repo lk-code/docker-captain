@@ -23,6 +23,7 @@ public class DataContext : DbContext
             DataContext.DatabasePath = dbPath;
         }
 
+        Console.WriteLine($"migrate");
         this.Database.Migrate();
     }
 
