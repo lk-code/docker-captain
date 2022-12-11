@@ -7,6 +7,7 @@ using DockerCaptain.Data.Extensions;
 using DockerCaptain.Docker.Extensions;
 using DockerCaptain.Logging;
 using DockerCaptain.PlatformCore.Extensions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using static System.Environment;
@@ -26,6 +27,8 @@ public class Program : CoconaConsoleAppBase
 
     static void Main(string[] args)
     {
+        Console.WriteLine(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json")));
+
         CoconaAppHostBuilder? builder = CoconaApp.CreateHostBuilder();
 
         #region set application directory path
@@ -74,7 +77,7 @@ public class Program : CoconaConsoleAppBase
         {
             // disable ef core output
             logging.ClearProviders()
-            .AddConsoleLogger()
+            //.AddConsoleLogger()
             .AddFileLogger(configuration =>
             {
                 configuration.LogPath = Path.Combine(Program.ApplicationFolderPath, "logs");
