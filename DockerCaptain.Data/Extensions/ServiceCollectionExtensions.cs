@@ -12,7 +12,6 @@ public static class ServiceCollectionExtensions
     {
         string dbpath = Path.Combine(localStoragePath, databaseFileName);
         DataContext.DatabasePath = dbpath;
-        Console.WriteLine($"set database path to {dbpath}");
 
         services.AddDbContext<DataContext>();
 

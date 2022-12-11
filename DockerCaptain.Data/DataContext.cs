@@ -23,8 +23,16 @@ public class DataContext : DbContext
             DataContext.DatabasePath = dbPath;
         }
 
-        Console.WriteLine($"migrate");
-        this.Database.Migrate();
+        try
+        {
+            this.Database.Migrate();
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine("ERROR AT SQLITE MIGRATION:");
+            Console.WriteLine(err.Message);
+            Console.WriteLine(err.StackTrace);
+        }
     }
 
     public string GetDatabaseFilePath()
