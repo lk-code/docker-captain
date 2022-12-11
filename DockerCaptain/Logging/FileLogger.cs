@@ -48,7 +48,7 @@ public sealed class FileLogger : ILogger
                 logPath = config.LogPath;
             }
 
-            string logFile = Path.Combine(logPath, $"log_{DateTime.Now.ToString(config.LogFileDateTemplate)}.txt");
+            string logFile = Path.Combine(logPath, $"log_{DateTime.Now.ToString("HH-mm-ss")}.txt");
 
             string type = $"{logLevel,-12}".ToUpper();
 
