@@ -9,9 +9,8 @@ using Microsoft.Extensions.Logging;
 
 namespace DockerCaptain.Commands;
 
-public class Images
+public class Images : BaseCommand
 {
-    private readonly ILogger<Images> _logger;
     private readonly IImageRepository _imageRepository;
     private readonly IImageService _imageService;
     private readonly IPlatform _platform;
@@ -19,16 +18,15 @@ public class Images
     public Images(ILogger<Images> logger,
         IImageRepository imageRepository,
         IImageService imageService,
-        IPlatform platform)
+        IPlatform platform) : base(logger)
     {
-        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this._imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         this._imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
         this._platform = platform ?? throw new ArgumentNullException(nameof(platform));
     }
 
     [Command("register")]
-    public async Task Register([Option('f')] bool force,
+    public async Task RegisterCommand([Option('f')] bool force,
         [Argument(Description = "name of the docker image")] string name)
     {
         this._logger.LogTrace("Images->Register");
@@ -38,8 +36,8 @@ public class Images
             && force != true)
         {
             // image already registered
-
             this._logger.LogInformation($"image {name} already registered!");
+            this.WriteInformation($"image {name} already registered!");
 
             return;
         }
@@ -56,6 +54,7 @@ public class Images
         {
             hasError = true;
             this._logger.LogError(LogEvents.CommandImagesRegister, err, err.Message);
+            this.WriteError(err.Message);
         }
         if (hasError)
         {
@@ -73,6 +72,7 @@ public class Images
         {
             hasError = true;
             this._logger.LogError(LogEvents.CommandImagesRegister, err, err.Message);
+            this.WriteError(err.Message);
         }
         if (hasError)
         {
@@ -80,5 +80,6 @@ public class Images
         }
 
         this._logger.LogInformation($"Image {pullResult.Id} successfully registered and pulled to docker.");
+        this.WriteInformation($"Image {pullResult.Id} successfully registered and pulled to docker.");
     }
 }

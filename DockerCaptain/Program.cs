@@ -75,7 +75,6 @@ public class Program : CoconaConsoleAppBase
         {
             // disable ef core output
             logging.ClearProviders()
-            .AddConsoleLogger()
             .AddFileLogger(configuration =>
             {
                 configuration.LogPath = Path.Combine(Program.ApplicationFolderPath, "logs");
