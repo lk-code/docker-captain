@@ -7,8 +7,6 @@ public class DataContextFactory : IDesignTimeDbContextFactory<DataContext>
 {
     public DataContext CreateDbContext(string[] args)
     {
-        Console.WriteLine($"CreateDbContext");
-
         string migrationsDatabaseFile = "migrations.db";
         File.Delete(migrationsDatabaseFile);
         File.Create(migrationsDatabaseFile);

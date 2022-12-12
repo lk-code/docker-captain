@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Cocona;
 using DockerCaptain.Data.Interfaces;
 using DockerCaptain.Logging;
 using DockerCaptain.PlatformCore;
@@ -8,22 +9,20 @@ using Microsoft.Extensions.Logging;
 
 namespace DockerCaptain.Commands;
 
-public class Info
+public class Info : BaseCommand
 {
-    private readonly ILogger<Info> _logger;
     private readonly IImageRepository _imageRepository;
     private readonly IPlatform _platform;
 
     public Info(ILogger<Info> logger,
         IImageRepository imageRepository,
-        IPlatform platform)
+        IPlatform platform) : base(logger)
     {
-        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
         this._imageRepository = imageRepository ?? throw new ArgumentNullException(nameof(imageRepository));
         this._platform = platform ?? throw new ArgumentNullException(nameof(platform));
     }
 
-    public async Task DisplayInfo()
+    public async Task InfoCommand()
     {
         this._logger.LogTrace("Info->DisplayInfo");
 
@@ -64,6 +63,8 @@ public class Info
         }
         catch (Exception err)
         {
+            this.WriteError(err.Message);
+
             this._logger.LogError(LogEvents.CommandInfoDisplayInfo, err, err.Message);
         }
     }
